@@ -1,0 +1,98 @@
+using System;
+
+class Program
+{
+static Random random = new Random();
+
+static void Main()
+    {
+        Console.WriteLine("  ＜°))))=  PESQUEIRO - Seja Bem Vindo ＜°))))= ");
+
+        Console.Write("Digite o número de peixes que existem no lago: ");
+        int numPeixes = int.Parse(Console.ReadLine());
+
+        Console.Write("Digite o número de jogadores: ");
+        int numJogadores = int.Parse(Console.ReadLine());
+
+        //arrays que armazenam informações dos jogadores
+        string[] jogadores = new string[numJogadores];
+        int[] tentativas = new int[numJogadores];
+        int[] peixesPescados = new int[numJogadores];
+
+        Console.Write("Digite o número de tentativas para cada jogador: ");
+        int numTentativas = int.Parse(Console.ReadLine());
+
+        //cadastrando os jogadores
+        for (int i = 0; i < numJogadores; i++) {
+            Console.Write($"Digite o nome do jogador {i + 1}: ");
+            jogadores[i] = Console.ReadLine();
+            tentativas[i] = numTentativas;
+
+        }
+
+        //gerando o lago com 50 posições
+        int[] lago = new int[50];
+
+       
+        int posicao;
+
+        //destribuindo os peixes aleatóriamente no lago com o (random)
+        for (int i = 0; i < numPeixes; i++) {
+            do {
+                posicao = random.Next(50);//escolhe uma posição entre as 50
+            } 
+            while (lago[posicao] != 0); //se a posição ja estiver ocupada, escolhe outra vazia
+
+            lago[posicao] = 1;//quando encontrar uma vazia, marca ela como ocupada
+        }
+
+        for (int t = 0; t < numTentativas; t++) {
+            for (int j = 0; j < numJogadores; j++) {
+                if (tentativas[j] > 0) {
+                    Console.Write($"{jogadores[j]}, digite uma posição (0-49): ");
+                    int posicaoEscolhida = int.Parse(Console.ReadLine());
+
+                    if (posicaoEscolhida < 0 || posicaoEscolhida >= 50) {
+                        Console.WriteLine("Essa posição é inválida! Escolha outra!");
+                        continue;
+
+                    }
+                    if (lago[posicaoEscolhida] == 1) { //se houver algum peixa na posição escolhida
+                        Console.WriteLine("Você conseguiu pescar um peixe!");
+                        peixesPescados[j]++;
+                        lago[posicaoEscolhida] = 0;//retirar o peixe daquela posição.
+
+                    }
+                    else {
+                        Console.WriteLine("Nenhum peixe foi pescado.");
+
+                    }
+                    tentativas[j]--; //redus uma tentativa do jogador
+                }
+            }
+        }
+int vencedor = 0;
+bool empate = false; //Boolean para determinar se houve empate
+
+        for (int i = 1; i < numJogadores; i++) {
+            if (peixesPescados[i] > peixesPescados[vencedor]) {
+                vencedor = i;
+                empate = false;
+
+            }
+
+        /* Verifica se o jogador "i"... tem a mesma quantidade de peixes pescados que o vencedor até o momento
+        e se não é o mesmo jogador (empate entre jogadores diferentes).*/
+        if (peixesPescados[i] == peixesPescados[vencedor] && i != vencedor) {
+           empate = true;
+        }
+        }
+        if (empate) {
+            Console.WriteLine("O jogo terminou em empate.");
+        }
+        else {
+            Console.WriteLine($"O vencedor é {jogadores[vencedor]} com {peixesPescados[vencedor]} peixes pescados.");
+        
+        }
+    }
+}
