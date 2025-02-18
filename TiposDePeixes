@@ -1,0 +1,96 @@
+using System;
+
+class Program
+{
+    static Random random = new Random();
+
+    static void Main()
+    {
+        Console.WriteLine("  ＜°))))=  PESQUEIRO - Seja Bem Vindo ＜°))))= ");
+
+        Console.Write("Digite o número de peixes que existem no lago: ");
+        int numPeixes = int.Parse(Console.ReadLine());
+
+        Console.Write("Digite o número de jogadores: ");
+        int numJogadores = int.Parse(Console.ReadLine());
+
+        string[] jogadores = new string[numJogadores];
+        int[] tentativas = new int[numJogadores];
+        double[] quilosPescados = new double[numJogadores];
+
+        Console.Write("Digite o número de tentativas para cada jogador: ");
+        int numTentativas = int.Parse(Console.ReadLine());
+
+        for (int i = 0; i < numJogadores; i++) {
+            Console.Write($"Digite o nome do jogador {i + 1}: ");
+            jogadores[i] = Console.ReadLine();
+            tentativas[i] = numTentativas;
+        }
+
+        int[] lago = new int[50];
+        int posicao;
+
+        //gerando peixes aleatoriamente no lago com  os tipos diferentes
+        for (int i = 0; i < numPeixes; i++) {
+            do {
+                posicao = random.Next(50); 
+            }
+            while (lago[posicao] != 0);
+
+            lago[posicao] = random.Next(1, 4); //define o tipo do peixe : 1- tilápia, 2- pacu, 3- tambaqui
+        }
+        for (int t = 0; t < numTentativas; t++) {
+            for (int j = 0; j < numJogadores; j++) {
+                if (tentativas[j] > 0) {
+                    Console.Write($"{jogadores[j]}, digite uma posição (0-49): ");
+                    int posicaoEscolhida = int.Parse(Console.ReadLine());
+
+                    if (posicaoEscolhida < 0 || posicaoEscolhida >= 50) {
+                        Console.WriteLine("Essa posição é inválida! Escolha outra!");
+                        continue;
+                    }
+
+                    //definindo o peso com base no tipo do peixe pescado
+                    if (lago[posicaoEscolhida] != 0) {
+                        double peso = 0;
+
+                        //definindo o peso com base no tipo de peixe, utilizando switch
+                        int tipoPeixe = lago[posicaoEscolhida]; //tipo do peixe
+                        switch (tipoPeixe) {
+                            case 1: //Tilápia
+                                peso = random.Next(1, 3); //Tilápia é de 1kg a 2kg.
+                                break;
+
+                            case 2: //Pacu
+                                peso = random.Next(2, 5); //Pacu é de 2kg a 4kg.
+                                break;
+
+                            case 3: //Tambaqui
+                                peso = random.Next(3, 6); //Tambaqui é de 3kg a 5kg.
+                                break;
+
+                            default:
+                                peso = 0; //se não for nenhum dos peixes
+                                break;
+                        }
+                        Console.WriteLine($"Você pescou um peixe de {peso} kg!");
+                        quilosPescados[j] += peso; //adicionando o peso ao total de quilos pescados por jogador
+                        lago[posicaoEscolhida] = 0;
+                    }
+                    else {
+                        Console.WriteLine("Nenhum peixe foi pescado.");
+                    }
+
+                    tentativas[j]--;
+                }
+            }
+        }
+        int vencedor = 0;
+        for (int i = 1; i < numJogadores; i++) {
+            if (quilosPescados[i] > quilosPescados[vencedor]) {
+                vencedor = i;
+            }
+        }
+        Console.WriteLine($"O vencedor é {jogadores[vencedor]} com {quilosPescados[vencedor]} kg de peixe pescados.");
+    }
+}
